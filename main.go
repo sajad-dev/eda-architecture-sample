@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/websocket"
+	"github.com/joho/godotenv"
 )
 
 type MsgStruct struct {
@@ -39,9 +41,11 @@ func controller(w http.ResponseWriter, r *http.Request, msg chan string) {
 }
 
 func main() {
-	url := "ws://127.0.0.1:8081/RZbQAxKwh1fU9SFx"
+	godotenv.Load(".env")
+	
+	url := fmt.Sprintf("ws://%s:%s/%s",os.Getenv("IP"),os.Getenv("WEBSOCKET_PORT"),os.Getenv("PUBLIC_KEY"))
 	headers := http.Header{}
-	headers.Add("secret_key", "850vRi8t3jbz2kIn")
+	headers.Add("secret_key",os.Getenv("SECRET_KEY"))
 
 	conn, _, err := websocket.DefaultDialer.Dial(url, headers)
 	if err != nil {
@@ -65,5 +69,5 @@ func main() {
 	}()
 
 	http.HandleFunc("/send", handler(message, controller))
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(fmt.Sprintf(":%s",os.Getenv("WEBSERVER_PORT")), nil)
 }
