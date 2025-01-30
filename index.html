@@ -9,46 +9,52 @@
     <div id="box"></div>
     <input id="message" />
     <button onclick="sendClick()">Send</button>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+
     <script>
       async function sendClick() {
-            fetch('http://127.0.0.1:8000/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: document.getElementById('message').value}),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.text();
-            })
-            .then(data => console.log(data))
-            .catch(error => console.error('There has been a problem with your fetch operation:', error));
+        fetch("http://127.0.0.1:8000/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: document.getElementById("message").value,
+          }),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.text();
+          })
+          .then((data) => console.log(data))
+          .catch((error) =>
+            console.error(
+              "There has been a problem with your fetch operation:",
+              error
+            )
+          );
       }
 
-      const socket = new WebSocket("ws://127.0.0.1:8081/RZbQAxKwh1fU9SFx");
+      Pusher.logToConsole = true;
+      const pusher = new Pusher("d6kAd89bMqDrLrFh", {
+        wsHost: "127.0.0.1",
+        wsPort: 8081,
+        forceTLS: false,
+        enabledTransports: ["ws"],
+      });
+      Pusher.logToConsole = true;
 
-      socket.onopen = () => {
-        console.log("Connection Websocket");
-      };
+      var channel = pusher.subscribe("test");
+      channel.bind("publish", function (data) {
+        const div = document.getElementById("box");
 
-      socket.onmessage = (event) => {
-        const box = document.getElementById("box");
-        const paragraph = document.createElement("p");
-        paragraph.textContent = event.data;
+        const p = document.createElement("p");
+        p.textContent = data;
 
-        box.appendChild(paragraph);
-      };
-
-      socket.onerror = (error) => {
-        console.error("Err", error);
-      };
-
-      socket.onclose = (event) => {
-        console.log("Closed socket !!", event);
-      };
+        div.appendChild(p);
+      });
     </script>
   </body>
 </html>
