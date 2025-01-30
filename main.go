@@ -3,9 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"net/http/httputil"
 
 	"github.com/pusher/pusher-http-go"
 )
@@ -14,17 +12,6 @@ type loggingTransport struct {
 	Transport http.RoundTripper
 }
 
-func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	requestDump, err := httputil.DumpRequestOut(req, true)
-	if err != nil {
-		log.Println("Error dumping request:", err)
-	} else {
-		log.Println("REQUEST:")
-		log.Println(string(requestDump))
-	}
-	resp, err := t.Transport.RoundTrip(req)
-	return resp, err
-}
 
 var client = pusher.Client{
 	AppId:  "local",
@@ -32,11 +19,7 @@ var client = pusher.Client{
 	Key:    "d6kAd89bMqDrLrFh",
 	Secure: false,
 	Host:   "127.0.0.1:8081",
-	HttpClient: &http.Client{
-		Transport: &loggingTransport{
-			Transport: http.DefaultTransport,
-		},
-	},
+
 }
 
 type Body struct {
