@@ -13,7 +13,7 @@
 
     <script>
       async function sendClick() {
-        fetch("http://127.0.0.1:8000/send", {
+        fetch("http://IP:PORT_WEBSERVER/send", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -38,16 +38,16 @@
       }
 
       Pusher.logToConsole = true;
-      const pusher = new Pusher("d6kAd89bMqDrLrFh", {
-        wsHost: "127.0.0.1",
-        wsPort: 8081,
+      const pusher = new Pusher("PUBLIC_KEY", {
+        wsHost: "IP",
+        wsPort: "PORT_WEBSOCKET",
         forceTLS: false,
         enabledTransports: ["ws"],
       });
       Pusher.logToConsole = true;
 
-      var channel = pusher.subscribe("test");
-      channel.bind("publish", function (data) {
+      var channel = pusher.subscribe("CHANNEL");
+      channel.bind("EVENT", function (data) {
         const div = document.getElementById("box");
 
         const p = document.createElement("p");

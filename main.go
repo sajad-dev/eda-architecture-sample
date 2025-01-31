@@ -15,10 +15,10 @@ type loggingTransport struct {
 
 var client = pusher.Client{
 	AppId:  "local",
-	Secret: "3ueVhNtuicMeJpYq",
-	Key:    "d6kAd89bMqDrLrFh",
+	Secret: "SECRET_KEY",
+	Key:    "PUBLIC_KEY",
 	Secure: false,
-	Host:   "127.0.0.1:8081",
+	Host:   "IP:WEBSOCKET_PORT",
 
 }
 
@@ -46,6 +46,6 @@ func handelFunc(w http.ResponseWriter, r *http.Request) {
 func main() {
 
 	http.HandleFunc("/send", handelFunc)
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":PORT_BACKEND", nil)
 
 }
